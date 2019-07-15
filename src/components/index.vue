@@ -1,18 +1,11 @@
 <template>
- 
-     <router-view></router-view>
-
+  <div>index.vue</div>
 </template>
 
 <script>
-
-
 export default {
-  name: 'app'
-
+   name:'index'
 }
-
-
 </script>
 
 <style>
