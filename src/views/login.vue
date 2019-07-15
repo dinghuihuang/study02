@@ -11,7 +11,7 @@
   </el-form-item>
  
   <el-form-item>
-    <el-button type="primary" @click="submitForm('ruleForm')" class="my_btn">提交</el-button>
+    <el-button type="primary" @click="submitForm('ruleForm')" class="my_btn">登录</el-button>
   </el-form-item>
 </el-form>
      </div>

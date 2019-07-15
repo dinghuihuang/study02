@@ -9,7 +9,7 @@
           <h2 class="title">电商后台管理页面</h2>
         </el-col>
         <el-col :span="1">
-          <a href="#" class="logout">退出</a>
+          <a href="#" class="logout" @click.prevent="logOut">退出</a>
         </el-col>
       </el-row>
     </el-header>
@@ -105,8 +105,17 @@
 </template>
 
 <script>
+import {users} from '../api/http'
 export default {
   name: "index",
+  created() {
+    users({
+      pagenum:1,
+      pagesize:5
+    }).then(backData=>{
+      console.log(backData);
+    })
+  },
   data() {
     return {
       isCollapse: false
@@ -114,10 +123,27 @@ export default {
   },
   methods: {
     handleOpen(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
+    },
+    logOut(){
+      this.$confirm('此操作将会退出, 是否继续?', '警告', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          window.sessionStorage.removeItem('token')
+          this.$router.push('/login')
+          this.$message({
+            type: 'success',
+            message: '退出成功'
+
+          });
+        }).catch(() => {
+          this.$message('你真好!!!');          
+        });
     }
   }
 };

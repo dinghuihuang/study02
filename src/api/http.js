@@ -10,3 +10,17 @@
       password
     })
   }
+  //暴露获取用户列表
+  export const users =(({query,pagenum,pagesize})=>{
+     return managerAxios.get('users', {
+       params: {
+         query,
+         pagenum,
+         pagesize
+       },
+       //设置请求头
+       headers: {
+         Authorization:window.sessionStorage.getItem('token')
+       }
+     })
+  })
