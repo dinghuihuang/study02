@@ -3,11 +3,11 @@
      <div class="form_box">
         <el-form   :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"  label-position="top">
      <h2>用户登录</h2>
-  <el-form-item label="用户名" prop="pass" >
-    <el-input type="text" v-model="ruleForm.pass" autocomplete="off" ></el-input>
+  <el-form-item label="用户名" prop="username" >
+    <el-input type="text" v-model="ruleForm.username" autocomplete="off" ></el-input>
   </el-form-item>
-  <el-form-item label="密码" prop="checkPass">
-    <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+  <el-form-item label="密码" prop="password">
+    <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
   </el-form-item>
  
   <el-form-item>
@@ -19,70 +19,51 @@
 </template>
 
 <script>
+import { login } from '../api/http'
 export default {
   name:'login',
   data() {
-    
-      var checkAge = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('年龄不能为空'));
-        }
-        setTimeout(() => {
-          if (!Number.isInteger(value)) {
-            callback(new Error('请输入数字值'));
-          } else {
-            if (value < 18) {
-              callback(new Error('必须年满18岁'));
-            } else {
-              callback();
-            }
-          }
-        }, 1000);
-      };
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入用户名'));
-        } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
-          }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else if (value !== this.ruleForm.pass) {
-          callback(new Error('密码错误'));
-        } else {
-          callback();
-        }
-      };
       return {
         ruleForm: {
-          pass: '',
-          checkPass: ''
+          username: '',
+          password: ''
         },
         rules: {
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
+          username: [
+            { required: true, message: '用户名不能为空', trigger: 'blur' },
+            { min: 4, max: 12, message: '长度在 4 到 12 个字符', trigger: 'blur' }
           ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
-          ],
-          age: [
-            { validator: checkAge, trigger: 'blur' }
+          password: [
+            { required: true, message: '密码不能为空', trigger: 'blur' },
+            { min: 4, max: 21, message: '长度在 4 到 21 个字符', trigger: 'change' }
           ]
+          
         }
       };
     },
     methods: {
       submitForm(formName) {
+             // 获取设置ref的元素 this.$refs.xxx
+      // console.log(this.$refs)
+      // 调用了 饿了么ui的form组件的 验证方法 饿了么提供的
+      // 回调函数中， valid有值说明成功了，没有值失败了        
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            // alert('submit!');
+            login(this.ruleForm).then(backData=>{             
+              console.log(backData);
+              if (backData.data.meta.status==200) {
+                 this.$message.success(backData.data.meta.msg)
+                 this.$router.push('./index')
+                  // 保存token
+                  window.sessionStorage.setItem('token',backData.data.data.token)
+              }else if(backData.data.meta.status==400){
+                this.$message.error(backData.data.meta.msg)
+              }
+              
+            })
           } else {
-            console.log('error submit!!');
+             this.$message.error("哥们，你有东西没有写哦！");
             return false;
           }
         });
