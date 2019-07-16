@@ -24,3 +24,11 @@
        }
      })
   })
+  //左侧菜单权限
+  export const menus =() =>{
+    return managerAxios.get('menus', {
+      headers: {
+        Authorization: window.sessionStorage.getItem('token')
+      }
+    })
+  }

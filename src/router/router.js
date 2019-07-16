@@ -5,6 +5,16 @@ Vue.use(VueRouter)
 import login from '../views/login.vue'
 import index from '../views/index.vue'
 
+
+
+import users from '../views/users.vue'
+import roles from '../views/roles.vue'
+import rights from '../views/rights.vue'
+
+
+// import { users } from '../api/http';
+
+
 const routes = [
   { path: '/', redirect: '/login' },
   {
@@ -15,7 +25,24 @@ const routes = [
       needLogin: false
     }
   },
-  { path: '/index', component: index }
+  {
+    path: '/index',
+    component: index,
+    children: [
+      {
+        path: 'users',
+        component: users
+      },
+      {
+        path: 'roles',
+        component: roles
+      },
+      {
+        path: 'rights',
+        component: rights
+      }
+    ]
+  }
 ]
 
 //实例化理由
@@ -24,7 +51,7 @@ const router = new VueRouter({
 })
 // 增加导航守卫
 router.beforeEach((to, from, next) => {
-  console.log(to)
+  // console.log(to)
   // 找到需要判断的页面
   // if (to.path.indexOf('/index') == 0) {
   if (to.meta.needLogin != false) {
@@ -32,8 +59,8 @@ router.beforeEach((to, from, next) => {
     if(window.sessionStorage.getItem('token')!=undefined){
       next()
     }else{
-      this.$message.error('哥们,先登录')
-      this.$router.push('/login')
+      new Vue().$message.error('哥们,先登录')
+      router.push('/login')
     }
   }else{
     next()

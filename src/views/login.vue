@@ -51,10 +51,11 @@ export default {
           if (valid) {
             // alert('submit!');
             login(this.ruleForm).then(backData=>{             
-              console.log(backData);
+              // console.log(backData);
               if (backData.data.meta.status==200) {
-                 this.$message.success(backData.data.meta.msg)
+                
                  this.$router.push('./index')
+                  this.$message.success(backData.data.meta.msg)
                   // 保存token
                   window.sessionStorage.setItem('token',backData.data.data.token)
               }else if(backData.data.meta.status==400){

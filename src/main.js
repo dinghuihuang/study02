@@ -9,6 +9,10 @@ import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 //引入全局样式
 import './assets/bass.css'
+
+import mybread from './components/mybread.vue'
+Vue.component("mybread",mybread)
+
 //导入自己路由
 import router from './router/router'
 

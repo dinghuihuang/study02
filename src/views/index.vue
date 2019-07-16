@@ -19,115 +19,54 @@
         <el-menu
           default-active="5"
           class="el-menu-vertical-demo"
-          @open="handleOpen"
-          @close="handleClose"
           :collapse="isCollapse"
           :unique-opened="true"
+          :router='true'
         >
           <!-- 左侧导航 -->
-          <el-submenu index="1">
+          <el-submenu  v-for="(item,index) in menuList"   :index="''+index">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span slot="title">用户管理</span>
+              <span slot="title">{{item.authName}}</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="1-1">
+              <el-menu-item v-for="(it,i) in item.children" :index="'/index/'+it.path">
                 <i class="el-icon-menu"></i>
-                用户列表
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">权限管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="2-1">
-                <i class="el-icon-menu"></i>
-                角色列表
-              </el-menu-item>
-              <el-menu-item index="2-2">
-                <i class="el-icon-menu"></i>
-                权限列表
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">商品管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="3-1">
-                <i class="el-icon-menu"></i>
-                商品列表
-              </el-menu-item>
-              <el-menu-item index="3-2">
-                <i class="el-icon-menu"></i>
-                分类参数
-              </el-menu-item>
-              <el-menu-item index="3-3">
-                <i class="el-icon-menu"></i>
-                商品分类
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">订单管理</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="4-1">
-                <i class="el-icon-menu"></i>
-                订单列表
-              </el-menu-item>
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="5">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">数据统计</span>
-            </template>
-            <el-menu-item-group>
-              <el-menu-item index="5-1">
-                <i class="el-icon-menu"></i>
-                数据列表
+                {{it.authName}}
               </el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main class="my_main">Main</el-main>
+      <el-main class="my_main">
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-import {users} from '../api/http'
+
+import {menus}  from '../api/http'
 export default {
   name: "index",
   created() {
-    users({
-      pagenum:1,
-      pagesize:5
-    }).then(backData=>{
-      console.log(backData);
+    menus().then(backData=>{
+    //  console.log(backData);
+    if (backData.data.meta.status==200) {
+    this.menuList=backData.data.data
+      
+    }
+     
     })
   },
   data() {
     return {
-      isCollapse: false
+      isCollapse: false,
+      menuList:[]
     };
   },
   methods: {
-    handleOpen(key, keyPath) {
-      // console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      // console.log(key, keyPath);
-    },
     logOut(){
       this.$confirm('此操作将会退出, 是否继续?', '警告', {
           confirmButtonText: '确认',
@@ -139,7 +78,6 @@ export default {
           this.$message({
             type: 'success',
             message: '退出成功'
-
           });
         }).catch(() => {
           this.$message('你真好!!!');          
@@ -179,6 +117,7 @@ export default {
   }
   .my_main {
     background-color: #e9eef3;
+    padding-top: 0px;
   }
 }
 </style>
