@@ -4,6 +4,7 @@ Vue.use(VueRouter)
 //导入路由
 import login from '../views/login.vue'
 import index from '../views/index.vue'
+import error from '../views/error.vue'
 
 
 
@@ -67,6 +68,15 @@ const routes = [
         component: params
       }
     ]
+  },
+  {
+    path: '/error',
+    component: error
+  },
+  // 兜底的规则
+  {
+    path:'*',
+    redirect:'/error'
   }
 ]
 
