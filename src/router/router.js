@@ -10,6 +10,9 @@ import index from '../views/index.vue'
 import users from '../views/users.vue'
 import roles from '../views/roles.vue'
 import rights from '../views/rights.vue'
+import goods from '../views/goods.vue'
+import categories from '../views/categories.vue'
+import orders from '../views/orders.vue'
 
 
 // import { users } from '../api/http';
@@ -40,6 +43,18 @@ const routes = [
       {
         path: 'rights',
         component: rights
+      },
+      {
+        path: 'goods',
+        component: goods
+      },
+      {
+        path: 'categories',
+        component: categories
+      },
+      {
+        path: 'orders',
+        component: orders
       }
     ]
   }
