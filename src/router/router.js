@@ -13,6 +13,7 @@ import rights from '../views/rights.vue'
 import goods from '../views/goods.vue'
 import categories from '../views/categories.vue'
 import orders from '../views/orders.vue'
+import reports from '../views/reports.vue'
 
 
 // import { users } from '../api/http';
@@ -55,6 +56,10 @@ const routes = [
       {
         path: 'orders',
         component: orders
+      },
+      {
+        path: 'reports',
+        component: reports
       }
     ]
   }
