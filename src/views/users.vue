@@ -20,7 +20,9 @@
       <el-table-column prop="mobile" label="电话" width="180"></el-table-column>
       <el-table-column label="用户状态" width="180">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch v-model="scope.row.mg_state" 
+          @change="changestatus(scope.row)"
+          active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -32,12 +34,13 @@
             size="mini"
             @click="handleEdit(scope.row)"
           ></el-button>
+          <!-- 删除这一行 -->
           <el-button
             size="mini"
             plain
             icon="el-icon-delete"
             type="danger"
-            @click="handleDelete(scope.row)"
+            @click="delOne(scope.row)"
           ></el-button>
           <el-button
             size="mini"
@@ -87,7 +90,7 @@
 </template>
 
 <script>
-import { users,addUsers,eleteUser } from "../api/http.js";
+import { users,addUsers,deleteUser } from "../api/http.js";
 export default {
   name: "users",
   data() {
@@ -110,6 +113,16 @@ export default {
         mobile:''
 
       },
+      // 编辑框对应的数据
+      editForm: {
+        username: "",
+        mobile: "",
+        email: "",
+        // 用户id 方便一会编辑
+        id: ""
+      },
+      // 总页数
+      total: 0,
       rules:{
           username: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -127,7 +140,29 @@ export default {
    this.search()
   },
   methods: {
-    
+    //修改状态
+    changestatus(row){
+
+    },
+    // 删除
+    delOne(row){
+     this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           deleteUser({id:row.id}).then(backData=>{
+             console.log(backData);
+             if(backData.data.meta.status==200){
+               this.search();
+               this.$message.success("删掉了,开心了吧")
+             }
+             
+           })
+        }).catch(() => {
+          this.$message("想清楚点,小老弟");          
+        });
+    },
     search(){
       users({
       query: this.query,

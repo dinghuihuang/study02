@@ -87,5 +87,5 @@ export const addUsers=({
 }
 //删除用户
 export const deleteUser =({id})=>{
-  return managerAxios.delete(`/user${id}`)
+  return managerAxios.delete(`/users/${id}`)
 }
