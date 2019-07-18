@@ -32,7 +32,7 @@
             plain
             type="primary"
             size="mini"
-            @click="handleEdit(scope.row)"
+            @click="enterEdit(scope.row)"
           ></el-button>
           <!-- 删除这一行 -->
           <el-button
@@ -45,9 +45,9 @@
           <el-button
             size="mini"
             plain
-            type="success"
+            type="warning"
             icon="el-icon-check"
-            @click="handleDelete(scope.row)"
+            
           ></el-button>
         </template>
       </el-table-column>
@@ -58,39 +58,57 @@
       @current-change="handleCurrentChange"
       :current-page="pagenum"
       :page-sizes="[10, 20, 30, 40]"
-      :page-size="10"
+      :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="40"
+      :total="total"
     ></el-pagination>
-    <!-- 对话框  新增框 -->
-    <el-dialog title="添加用户"  :visible.sync="dialogFormVisible">
+    <!-- 对话框 新增框 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
       <!--ref的一会可以获取到  -->
-  <el-form :model="form"  ref="ruleForm" :rules="rules" >
-    <el-form-item label="用户名" prop='username' label-width="100px" >
-      <el-input v-model="form.username" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="密码" prop="password" label-width="100px">
-      <el-input v-model="form.password" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="邮箱" label-width="100px">
-      <el-input v-model="form.email" autocomplete="off"></el-input>
-    </el-form-item>
-    <el-form-item label="电话" label-width="100px">
-      <el-input v-model="form.mobile" autocomplete="off"></el-input>
-    </el-form-item>
-    
-    </el-form-item>
-  </el-form>
-  <div slot="footer" class="dialog-footer">
-    <el-button @click="dialogFormVisible = false">取 消</el-button>
-    <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
-  </div>
-</el-dialog>
+      <el-form ref="ruleForm" :rules="rules" :model="form" label-position="top">
+        <el-form-item label="用户名" prop="username" label-width="120px">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" label-width="120px">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="120px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="120px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- // 修改框 -->
+    <el-dialog title="修改用户" :visible.sync="editFormVisible">
+      <!--ref的一会可以获取到  -->
+      <el-form ref="ruleForm" :rules="rules" :model="editForm" label-position="top">
+        <el-form-item label="用户名" prop="username" label-width="120px">
+          <el-input v-model="editForm.username" disabled autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="120px">
+          <el-input v-model="editForm.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="120px">
+          <el-input v-model="editForm.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveEdit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { users,addUsers,deleteUser,updateUserState } from "../api/http.js";
+import { users,addUsers,deleteUser,updateUserState,updateUserInfo } from "../api/http.js";
 export default {
   name: "users",
   data() {
@@ -132,7 +150,8 @@ export default {
             { required: true, message: '请输入密码', trigger: 'blur' },
             { min: 5, max: 21, message: '长度在 5 到 21 个字符', trigger: 'blur' }
           ]
-      }
+      },
+      editFormVisible:false
 
     };
   },
@@ -140,6 +159,25 @@ export default {
    this.search()
   },
   methods: {
+    saveEdit(){
+updateUserInfo(this.editForm).then(backData=>{
+  // console.log(backData);
+  if(backData.data.meta.status==200){
+      this.$message.success("小样，改好了哟！！！");
+          // 关闭弹框
+          this.editFormVisible = false;
+          // 重新获取数据
+          this.search();
+  }
+  
+})
+    },
+    //进入编辑 row就是这一行的数据
+    enterEdit(row){
+      this.editFormVisible=true;
+      this.editForm=row;
+
+    },
     //修改状态
     changestatus(row){
     // console.log(row);
@@ -180,6 +218,8 @@ export default {
       // console.log(backData);
       if (backData.data.meta.status == 200) {
         this.tableData = backData.data.data.users;
+        // 保存总条数
+          this.total = backData.data.data.total;
       }
     });
     },

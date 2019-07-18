@@ -93,3 +93,10 @@ export const deleteUser =({id})=>{
 export const updateUserState =({id,type})=>{
   return managerAxios.put(`/users/${id}/state/${type}`)
 }
+//修改用户信息
+export const updateUserInfo =({id,email,mobile})=>{
+  return managerAxios.put(`/users/${id}`,{
+    email,
+    mobile
+  })
+}
