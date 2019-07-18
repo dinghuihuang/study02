@@ -89,3 +89,7 @@ export const addUsers=({
 export const deleteUser =({id})=>{
   return managerAxios.delete(`/users/${id}`)
 }
+//修改用户状态
+export const updateUserState =({id,type})=>{
+  return managerAxios.put(`/users/${id}/state/${type}`)
+}

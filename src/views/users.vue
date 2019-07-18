@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { users,addUsers,deleteUser } from "../api/http.js";
+import { users,addUsers,deleteUser,updateUserState } from "../api/http.js";
 export default {
   name: "users",
   data() {
@@ -142,7 +142,15 @@ export default {
   methods: {
     //修改状态
     changestatus(row){
-
+    // console.log(row);
+    updateUserState({id:row.id,type:row.mg_state}).then(backData=>{
+    //  console.log(backData);
+    if (backData.data.meta.status==200) {
+        this.search()
+    }
+     
+    })
+    
     },
     // 删除
     delOne(row){
