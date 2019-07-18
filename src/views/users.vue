@@ -4,12 +4,12 @@
     <!-- 输入框 -->
     <el-row>
       <el-col :span="7">
-        <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="请输入内容" v-model="query" class="input-with-select" @keyup.enter.native="search">
+          <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
         </el-input>
       </el-col>
       <el-col :span="1">
-        <el-button type="success" plain>添加用户</el-button>
+        <el-button type="success" plain @click="dialogFormVisible=true">添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
@@ -59,43 +59,110 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="40"
     ></el-pagination>
+    <!-- 对话框  新增框 -->
+    <el-dialog title="添加用户"  :visible.sync="dialogFormVisible">
+      <!--ref的一会可以获取到  -->
+  <el-form :model="form"  ref="ruleForm" :rules="rules" >
+    <el-form-item label="用户名" prop='username' label-width="100px" >
+      <el-input v-model="form.username" autocomplete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="密码" prop="password" label-width="100px">
+      <el-input v-model="form.password" autocomplete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="邮箱" label-width="100px">
+      <el-input v-model="form.email" autocomplete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="电话" label-width="100px">
+      <el-input v-model="form.mobile" autocomplete="off"></el-input>
+    </el-form-item>
+    
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisible = false">取 消</el-button>
+    <el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+  </div>
+</el-dialog>
   </div>
 </template>
 
 <script>
-import { users } from "../api/http.js";
+import { users,addUsers,eleteUser } from "../api/http.js";
 export default {
   name: "users",
   data() {
     return {
       value: true,
-      input3: "",
       select: "",
       tableData: [],
+      //搜索
       query: "",
+        // 页码
       pagenum: 1,
-      pageSize: 10
+      //页容量
+      pageSize: 10,
+      // 默认关闭
+      dialogFormVisible: false,
+      form:{
+        username:'',
+        password:'',
+        email:'',
+        mobile:''
+
+      },
+      rules:{
+          username: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
+          ],
+           password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 5, max: 21, message: '长度在 5 到 21 个字符', trigger: 'blur' }
+          ]
+      }
+
     };
   },
   created() {
-    users({
+   this.search()
+  },
+  methods: {
+    
+    search(){
+      users({
       query: this.query,
       pagenum: this.pagenum,
       pagesize: this.pageSize
     }).then(backData => {
-      console.log(backData);
+      // console.log(backData);
       if (backData.data.meta.status == 200) {
         this.tableData = backData.data.data.users;
       }
     });
-  },
-  methods: {
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
-    }
+    },
+    submitForm(formName){
+     this.$refs[formName].validate((valid) => {
+          if (valid) {
+             addUsers(this.form).then(backData=>{
+              //  console.log(backData);
+               if (backData.data.meta.status==201) {
+                   this.dialogFormVisible=false
+                   this.search()
+               }
+               
+             })
+          } else {
+            this.$message.warning("数据格式不对,请检查")
+            return false
+          }
+        });
+    },
   }
 };
 </script>

@@ -74,3 +74,18 @@ export const rightList=()=>{
 
   })
 }
+//获取添加用户
+export const addUsers=({
+  username,password,email,mobile
+})=>{
+  return managerAxios.post('/users',{
+     username,
+     password,
+     email,
+     mobile,
+  })
+}
+//删除用户
+export const deleteUser =({id})=>{
+  return managerAxios.delete(`/user${id}`)
+}
