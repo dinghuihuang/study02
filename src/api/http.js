@@ -68,3 +68,9 @@ export const menus = () => {
     // }
   })
 }
+//权限列表
+export const rightList=()=>{
+  return managerAxios.get('/rights/list',{
+
+  })
+}
