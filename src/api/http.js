@@ -100,3 +100,13 @@ export const updateUserInfo =({id,email,mobile})=>{
     mobile
   })
 }
+//角色列表
+export const  roles=()=>{
+  return managerAxios.get("/roles")
+}
+//分配角色
+export const disRoles=({id,rid})=>{
+  return managerAxios.put(`users/${id}/role`,{
+    rid
+  })
+}
