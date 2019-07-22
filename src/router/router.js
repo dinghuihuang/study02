@@ -6,17 +6,18 @@ import login from '../views/login.vue'
 import index from '../views/index.vue'
 import error from '../views/error.vue'
 
-
-
 import users from '../views/users.vue'
 import roles from '../views/roles.vue'
 import rights from '../views/rights.vue'
-import goods from '../views/goods.vue'
 import categories from '../views/categories.vue'
 import orders from '../views/orders.vue'
 import reports from '../views/reports.vue'
 import params from '../views/params.vue'
-
+//商品goods的路由
+import goods from '../views/goods/goods.vue'
+//goods的嵌套路由
+import goodsIndex from '../views/goods/components/goodsIndex.vue'
+import goodsAdd   from '../views/goods/components/goodsAdd.vue'
 
 // import { users } from '../api/http';
 
@@ -48,8 +49,21 @@ const routes = [
         component: rights
       },
       {
-        path: 'goods',
-        component: goods
+        path: 'goods', 
+        component: goods,
+        //嵌套路由
+        children:[
+         {
+        //嵌套路由不用加/
+        path:'',
+        component:goodsIndex
+         },
+        {
+         //嵌套路由不用加/
+        path:'add',  
+        component:goodsAdd
+        }
+        ]
       },
       {
         path: 'categories',

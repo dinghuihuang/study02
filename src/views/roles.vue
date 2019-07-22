@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="users">
     <mybread nav1="权限管理" nav2="角色列表"></mybread>
     <!-- 输入框 -->
@@ -14,17 +14,33 @@
           <!-- 循环顶级row -->
           <el-row v-for="topLevel in props.row.children">
             <el-col :span="4">
-              <el-tag  closable class="my_tag" type="primary" >{{topLevel.authName}}</el-tag>
+              <el-tag  closable class="my_tag" type="primary" 
+              @close="delRight(props.row,topLevel)"
+              >{{topLevel.authName}}</el-tag>
               <span class="el-icon-arrow-right"></span>
             </el-col>
+
+          <!--右侧-->
             <el-col :span="20">
+              <!--二级-->
               <el-row v-for="secondLevel in topLevel.children">
                 <el-col :span="6">
-                  <el-tag  closable class="my_tag" type="success">{{secondLevel.authName}}</el-tag>
+                  <el-tag  class="my_tag" 
+                    closable
+                  type="success"
+                   @close="delRight(props.row,secondLevel)"
+                  >{{secondLevel.authName}}</el-tag>
                   <span class="el-icon-arrow-right"></span>
                 </el-col>
+                <!--右侧-->
+                <!--三级level-->
                 <el-col :span="18">
-                  <el-tag closable class="my_tag" type="warning" v-for="thirdLevel in secondLevel.children">{{thirdLevel.authName}}</el-tag>
+                  <el-tag closable class="my_tag"
+                  v-for="thirdLevel in secondLevel.children"
+                  closable
+                   type="warning"
+                   @close="delRight(props.row,thirdLevel)"
+                   >{{thirdLevel.authName}}</el-tag>
                 </el-col>
               </el-row>
             </el-col>
